@@ -1,0 +1,86 @@
+{
+    "muestras_clasicas": 301,
+    "mejor_alpha": 0.0014743105465996867,
+    "rmse_regresion": 0.08338181196713897,
+    "coeficientes_lineales_activos": 6,
+    "acoplamientos_cuadraticos_activos": 27,
+    "multiplicador_lagrange_lambda": 0.659,
+    "hparam_space": {
+        "BATCH_SIZE": [
+            16,
+            32,
+            64,
+            128,
+            256
+        ],
+        "LEARNING_RATE": [
+            0.001,
+            0.0005,
+            0.0002,
+            0.0001,
+            5e-05
+        ],
+        "EMB_SIZE": [
+            64,
+            128,
+            256,
+            512,
+            1024
+        ],
+        "ATTN_HEADS": [
+            1,
+            2,
+            4,
+            8,
+            16
+        ],
+        "ENC_LAYERS": [
+            1,
+            2,
+            3,
+            4,
+            6
+        ],
+        "DEC_LAYERS": [
+            1,
+            2,
+            3,
+            4,
+            6
+        ]
+    },
+    "variable_names": [
+        "BATCH_SIZE_16",
+        "BATCH_SIZE_32",
+        "BATCH_SIZE_64",
+        "BATCH_SIZE_128",
+        "BATCH_SIZE_256",
+        "LEARNING_RATE_0.001",
+        "LEARNING_RATE_0.0005",
+        "LEARNING_RATE_0.0002",
+        "LEARNING_RATE_0.0001",
+        "LEARNING_RATE_5e-05",
+        "EMB_SIZE_64",
+        "EMB_SIZE_128",
+        "EMB_SIZE_256",
+        "EMB_SIZE_512",
+        "EMB_SIZE_1024",
+        "ATTN_HEADS_1",
+        "ATTN_HEADS_2",
+        "ATTN_HEADS_4",
+        "ATTN_HEADS_8",
+        "ATTN_HEADS_16",
+        "ENC_LAYERS_1",
+        "ENC_LAYERS_2",
+        "ENC_LAYERS_3",
+        "ENC_LAYERS_4",
+        "ENC_LAYERS_6",
+        "DEC_LAYERS_1",
+        "DEC_LAYERS_2",
+        "DEC_LAYERS_3",
+        "DEC_LAYERS_4",
+        "DEC_LAYERS_6"
+    ],
+    "intercept": -0.554688204731205,
+    "beta_multiobjective": 0.3
+}

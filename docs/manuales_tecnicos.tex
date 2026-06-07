@@ -1,0 +1,113 @@
+\chapter{Manuales técnicos}
+
+El código fuente íntegro desarrollado para este trabajo, así como los conjuntos de datos experimentales y los \textbf{scripts} de supercomputación, se encuentran disponibles de forma pública en el repositorio de GitHub: \url{https://github.com/fedellor/TFG_QITE_HPO_Reproducibility}.
+
+\vspace{0.5cm}
+Este repositorio ha sido diseñado bajo un paradigma de reproducibilidad estricta, conteniendo exclusivamente los archivos necesarios para ejecutar el \textbf{pipeline} algorítmico final y generar los resultados empíricos expuestos a lo largo de este documento.
+
+\section{Estructura de ficheros}
+
+A continuación, se detalla la topología del repositorio, agrupada en módulos funcionales para facilitar la trazabilidad experimental:
+
+\begin{itemize}
+    \item \textbf{Módulos de la Red Neuronal (Directorio raíz)}:
+    \begin{itemize}
+        \item \texttt{config.py}: Configuración y parámetros por defecto (semillas, rutas absolutas).
+        \item \texttt{embeddings.py}: Capas de embeddings categóricos y numéricos para el registro de eventos.
+        \item \texttt{encoders\_and\_decoders.py}: Arquitectura del \texttt{EventTransformer} en PyTorch.
+        \item \texttt{output\_layers.py}: Capas de proyección de salida para predicción multiobjetivo.
+        \item \texttt{training.py}: Rutina de entrenamiento por lotes, optimización y cálculo de pérdidas.
+        \item \texttt{evaluation.py}: Motor de evaluación de la similitud de Damerau-Levenshtein.
+        \item \texttt{utils.py}: Preprocesamiento, codificación y vectorización de trazas de eventos.
+    \end{itemize}
+    
+    \item \textbf{Módulos de HPO y Modelado (Directorio raíz)}:
+    \begin{itemize}
+        \item \texttt{sampler\_hpo.py}: Muestreo del espacio de búsqueda con filtrado de consistencia de hardware.
+        \item \texttt{train\_hpo.py}: Wrapper de validación cruzada de 5 pliegues para ejecución en GPU.
+        \item \texttt{generate\_qubo.py}: Construcción de la matriz QUBO mediante Lasso L1 Cross-Validation.
+    \end{itemize}
+    
+    \item \textbf{Resolvedores Cuánticos y Clásicos (Directorio raíz)}:
+    \begin{itemize}
+        \item \texttt{solve\_bayes\_opt.py}: Búsqueda clásica basada en Procesos Gaussianos.
+        \item \texttt{solve\_vqe.py}: Resolvedor cuántico VQE con emulación de barridos de ruido.
+        \item \texttt{solve\_qite.py}: Resolvedor cuántico VarQITE con paso temporal de Euler de paso fijo.
+    \end{itemize}
+
+    \item \textbf{Análisis Gráfico (Directorio raíz)}:
+    \begin{itemize}
+        \item \texttt{generate\_plots.py}: Generador de gráficas de convergencia, Pareto y análisis de ruido.
+    \end{itemize}
+
+    \item \textbf{\texttt{slurm/}}: Orquestación HPC. Colección de scripts \textit{bash} para el gestor Slurm en el clúster FinisTerrae III del CESGA.
+    \begin{itemize}
+        \item \texttt{setup\_env.sh}: Instalador aislado del entorno virtual (\texttt{tfg\_env}) en la partición Store.
+        \item \texttt{launch\_hpo.sh}: Plantilla de envío de array de trabajos paralelos (1-100) en GPUs NVIDIA A100.
+        \item \texttt{run\_bayes\_opt.sh}, \texttt{run\_vqe.sh}, \texttt{run\_qite.sh}: Envío de resolvedores en FT3.
+        \item \texttt{run\_vqe\_qmio.sh}, \texttt{run\_qite\_qmio.sh}: Orquestadores de envío en la QPU real de Qmio.
+    \end{itemize}
+
+    \item \textbf{\texttt{data/}}: Almacenamiento de matrices y datos de entrenamiento.
+    \begin{itemize}
+        \item \texttt{resultados\_hpo.csv}: Historial del pool clásico de HPO con las 300 evaluaciones.
+        \item \texttt{matriz\_qubo.csv}: Matriz $Q$ de coeficientes de acoplamiento cuadrático.
+        \item \texttt{metricas\_qubo.json}: Metadatos del ajuste Lasso y multiplicador de Lagrange $\lambda$.
+    \end{itemize}
+    
+    \item \textbf{\texttt{resultados/}}: Registro de telemetría final consolidado y figuras en alta resolución.
+    \begin{itemize}
+        \item \texttt{resultados\_soluciones\_reales.csv}: Base de datos unificada de las 55 soluciones óptimas.
+    \end{itemize}
+\end{itemize}
+
+\section{Creación del entorno}
+
+Para asegurar la estabilidad en la reproducción de los cálculos y evitar conflictos de dependencias, se recomienda utilizar Python 3.10 y gestionar el entorno en el clúster. 
+
+\vspace{0.5cm}
+Las instrucciones para inicializar el entorno virtual desde una terminal en FT3 son:
+
+\begin{enumerate}
+    \item Clonar el repositorio y acceder a la carpeta:
+    \begin{verbatim}
+git clone https://github.com/fedellor/TFG_QITE_HPO_Reproducibility.git
+cd TFG_QITE_HPO_Reproducibility
+    \end{verbatim}
+    
+    \item Ejecutar el script de aprovisionamiento de dependencias y activación en la partición Store de FT3:
+    \begin{verbatim}
+chmod +x slurm/setup_env.sh
+./slurm/setup_env.sh
+    \end{verbatim}
+\end{enumerate}
+
+\section{Reproducción de los resultados}
+
+El pipeline de experimentos híbrido se reproduce siguiendo un orden secuencial estructurado:
+
+\begin{enumerate}
+    \item \textbf{Generación del Pool HPO:} Ejecute el muestreo y envíe el array de trabajos a las GPUs A100 del FT3 para entrenar los 300 modelos Transformer base:
+    \begin{verbatim}
+python sampler_hpo.py
+sbatch slurm/launch_hpo.sh
+    \end{verbatim}
+    
+    \item \textbf{Ajuste del QUBO:} Una vez completados los entrenamientos clásicos, compile la superficie matemática cuadrática y obtenga la matriz QUBO:
+    \begin{verbatim}
+python generate_qubo.py
+    \end{verbatim}
+    
+    \item \textbf{Ejecución de los Resolvedores (FT3 y Qmio):} Lance los resolvedores clásicos, simulaciones con ruido en FT3 o despliegues físicos en la QPU real de Qmio mediante los scripts de Slurm:
+    \begin{verbatim}
+sbatch slurm/run_bayes_opt.sh
+sbatch slurm/run_vqe.sh
+sbatch slurm/run_qite.sh
+sbatch slurm/run_qite_qmio.sh  # Para ejecutar VarQITE en Qmio
+    \end{verbatim}
+    
+    \item \textbf{Validación de Soluciones y Graficado:} Tras la finalización de los solucionadores, reentrene las soluciones óptimas inéditas en GPU y compile los diagramas de Pareto e histogramas ejecutando:
+    \begin{verbatim}
+python generate_plots.py
+    \end{verbatim}
+\end{enumerate}
