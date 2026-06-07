@@ -58,8 +58,8 @@ chmod +x slurm/setup_env.sh
    sbatch slurm/run_bayes_opt.sh
    sbatch slurm/run_vqe.sh
    sbatch slurm/run_qite.sh
-   sbatch slurm/run_vqe_qmio.sh   # VQE en la QPU real de Qmio
-   sbatch slurm/run_qite_qmio.sh  # VarQITE en la QPU real de Qmio
+   sbatch slurm/run_vqe_qmio.sh   
+   sbatch slurm/run_qite_qmio.sh  
    ```
 4. **Graficar Resultados del TFG:**
    ```bash
