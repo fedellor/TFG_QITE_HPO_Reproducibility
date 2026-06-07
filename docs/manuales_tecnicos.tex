@@ -107,7 +107,8 @@ python src/generate_qubo.py
 sbatch slurm/run_bayes_opt.sh
 sbatch slurm/run_vqe.sh
 sbatch slurm/run_qite.sh
-sbatch slurm/run_qite_qmio.sh  # Para ejecutar VarQITE en Qmio
+sbatch slurm/run_vqe_qmio.sh   # Para ejecutar VQE en la QPU de Qmio
+sbatch slurm/run_qite_qmio.sh  # Para ejecutar VarQITE en la QPU de Qmio
     \end{verbatim}
     
     \item \textbf{Validación de Soluciones y Graficado:} Tras la finalización de los solucionadores, reentrene las soluciones óptimas inéditas en GPU y compile los diagramas de Pareto e histogramas ejecutando:

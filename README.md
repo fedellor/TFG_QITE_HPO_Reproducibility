@@ -24,40 +24,11 @@ Se modela el problema HPO como una formulación binaria cuadrática (**QUBO**) d
 
 ## Flujo del Pipeline HPO
 
-```mermaid
-flowchart TD
-    %% Estilos de Nodos
-    classDef dataset fill:#1f77b4,stroke:#333,stroke-width:2px,color:#fff;
-    classDef script fill:#2ca02c,stroke:#333,stroke-width:1px,color:#fff;
-    classDef master fill:#ff7f0e,stroke:#333,stroke-width:2px,color:#fff;
-    classDef cluster fill:#d62728,stroke:#333,stroke-width:1px,color:#fff;
-    classDef step fill:#7f7f7f,stroke:#333,stroke-width:1px,color:#fff;
-
-    %% Fase 1
-    subgraph F1 [Fase 1: Datos y Pool Inicial HPO]
-        Raw["Event Log (env_permit)"] --> EventLog["src/utils.py"]:::script
-        EventLog -->|"5-Fold CV (50 epocas)"| ClassicTrain["Entrenamiento en GPU (300+ comb)"]:::step
-        ClassicTrain --> HPO_CSV[("data/resultados_hpo.csv")]:::dataset
-    end
-
-    %% Fase 2
-    subgraph F2 [Fase 2: Modelado QUBO e Ising]
-        HPO_CSV --> LassoReg["src/generate_qubo.py (Lasso L1)"]:::script
-        LassoReg --> QUBO_CSV[("data/matriz_qubo.csv")]:::dataset
-    end
-
-    %% Fase 3
-    subgraph F3 [Fase 3: Optimización clásica y cuántica]
-        QUBO_CSV -->|"Mapeo Ising (Z_i)"| Solvers["src/solve_*.py (BO / VQE / VarQITE)"]:::script
-        Solvers -->|"Simulación en FT3 y QPU Real (Qmio)"| SolResults[("resultados/resultados_*.csv")]:::dataset
-    end
-
-    %% Fase 4
-    subgraph F4 [Fase 4: Validación y Cierre de Bucle]
-        SolResults -->|"Reentrenamiento HPO inédito en GPU (5-Fold CV)"| FT3Queue["FT3 (NVIDIA A100)"]:::cluster
-        FT3Queue -->|"Métricas HPO validadas"| MasterData[("resultados/resultados_soluciones_reales.csv")]:::master
-    end
-```
+El pipeline experimental sigue un flujo híbrido cerrado compuesto por 4 fases operativas:
+1. **Fase 1 (Pool de Datos HPO):** Muestreo uniforme de 300 combinaciones del espacio de hiperparámetros y entrenamiento cruzado (5-Fold CV, 50 épocas por fold) en GPUs A100 del FT3 para generar el dataset base `resultados_hpo.csv`.
+2. **Fase 2 (Modelado QUBO):** Ajuste de una superficie de costo cuadrática continua mediante regresión lineal regularizada Lasso L1 LARS Cross-Validation sobre el pool HPO para generar la matriz binaria cuadrática `matriz_qubo.csv` (30 variables / qubits).
+3. **Fase 3 (Optimización Cuántica y Clásica):** Mapeo del QUBO al Hamiltoniano de Ising e inyección de penalizaciones de Lagrange ($\lambda \approx 20$) para asegurar la restricción One-Hot. Búsqueda del estado de mínima energía mediante los solvers (BO, VQE, VarQITE) simulados en FT3 o ejecutados físicamente en la QPU de Qmio.
+4. **Fase 4 (Validación y Cierre de Bucle):** Reentrenamiento en GPU desde cero de las soluciones inéditas recomendadas por los solucionadores cuánticos/clásicos en la cola del FT3 (5-Fold CV, 50 épocas) y consolidación final de la frontera de Pareto.
 
 ---
 
@@ -87,7 +58,8 @@ chmod +x slurm/setup_env.sh
    sbatch slurm/run_bayes_opt.sh
    sbatch slurm/run_vqe.sh
    sbatch slurm/run_qite.sh
-   sbatch slurm/run_qite_qmio.sh  # Ejecución en Qmio
+   sbatch slurm/run_vqe_qmio.sh   # VQE en la QPU real de Qmio
+   sbatch slurm/run_qite_qmio.sh  # VarQITE en la QPU real de Qmio
    ```
 4. **Graficar Resultados del TFG:**
    ```bash
