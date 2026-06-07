@@ -7,61 +7,81 @@ Este repositorio ha sido diseñado bajo un paradigma de reproducibilidad estrict
 
 \section{Estructura de ficheros}
 
-A continuación, se detalla la topología del repositorio, donde el directorio raíz se ha simplificado para contener únicamente la documentación principal y el documento de la memoria, organizando todo el código fuente dentro del directorio \texttt{src/}:
+A continuación, se detalla de forma exhaustiva la topología completa del repositorio, agrupada en carpetas funcionales:
 
 \begin{itemize}
     \item \textbf{Directorio Raíz}:
     \begin{itemize}
-        \item \texttt{README.md}: Documento de presentación y guía rápida del repositorio.
-        \item \texttt{tfg.pdf}: Documento completo de la memoria académica oficial en formato PDF.
-        \item \texttt{.gitignore}: Filtro de exclusión para archivos temporales y binarios del sistema.
+        \item \texttt{README.md}: Documento de presentación, resumen del flujo metodológico y guía rápida de uso del repositorio.
+        \item \texttt{tfg.pdf}: Archivo de la memoria académica oficial en formato PDF.
+        \item \texttt{.gitignore}: Archivo de exclusión que filtra archivos temporales (como \texttt{\_\_pycache\_\_}), logs del clúster, entornos virtuales y metadatos de IDEs.
     \end{itemize}
 
-    \item \textbf{Módulo de Código Fuente (\texttt{src/})}: Directorio que agrupa toda la lógica ejecutable del pipeline:
+    \item \textbf{Módulo de Código Fuente (\texttt{src/})}: Agrupa la lógica ejecutable del pipeline y los procesadores:
     \begin{itemize}
-        \item \texttt{config.py}: Configuración y parámetros por defecto (semillas, rutas absolutas).
-        \item \texttt{embeddings.py}: Capas de embeddings categóricos y numéricos para el registro de eventos.
-        \item \texttt{encoders\_and\_decoders.py}: Arquitectura del \texttt{EventTransformer} en PyTorch.
-        \item \texttt{output\_layers.py}: Capas de proyección de salida para predicción multiobjetivo.
-        \item \texttt{training.py}: Rutina de entrenamiento por lotes, optimización y cálculo de pérdidas.
-        \item \texttt{evaluation.py}: Motor de evaluación de la similitud de Damerau-Levenshtein.
-        \item \texttt{utils.py}: Preprocesamiento, codificación y vectorización de trazas de eventos.
-        \item \texttt{sampler\_hpo.py}: Muestreo del espacio de búsqueda con filtrado de consistencia de hardware.
-        \item \texttt{train\_hpo.py}: Wrapper de validación cruzada de 5 pliegues para ejecución en GPU.
-        \item \texttt{generate\_qubo.py}: Construcción de la matriz QUBO mediante Lasso L1 Cross-Validation.
-        \item \texttt{solve\_bayes\_opt.py}: Búsqueda clásica basada en Procesos Gaussianos.
-        \item \texttt{solve\_vqe.py}: Resolvedor cuántico VQE con emulación de barridos de ruido.
-        \item \texttt{solve\_qite.py}: Resolvedor cuántico VarQITE con paso temporal de Euler de paso fijo.
-        \item \texttt{generate\_plots.py}: Generador de gráficas de convergencia, Pareto y análisis de ruido.
-        \item \texttt{train.ipynb}: Jupyter notebook para pruebas rápidas de entrenamiento.
-        \item \textbf{\texttt{data\_processors/}}: Subdirectorio con los scripts de carga e inicialización de logs de eventos.
+        \item \texttt{config.py}: Definición de hiperparámetros por defecto, nombres de marcas temporales, configuración de semillas pseudoaleatorias ($7, 42, 99, 123, 1001$) y rutas del clúster.
+        \item \texttt{embeddings.py}: Implementación en PyTorch de la conversión de atributos del log de eventos a embeddings continuos unificados.
+        \item \texttt{encoders\_and\_decoders.py}: Implementación de la arquitectura de red \texttt{EventTransformer} (bloques de autoatención multicabeza).
+        \item \texttt{output\_layers.py}: Capas lineales finales de proyección para predecir de forma multiobjetivo la siguiente actividad, tiempo de ciclo restante y recursos.
+        \item \texttt{training.py}: Rutina de entrenamiento por lotes, optimización AdamW, decaimiento del gradiente y control de funciones de pérdida.
+        \item \texttt{evaluation.py}: Algoritmo evaluador que calcula la exactitud mediante la distancia de similitud de Damerau-Levenshtein en secuencias predictivas.
+        \item \texttt{utils.py}: Funciones auxiliares de procesamiento de trazas, vectorización y padding.
+        \item \texttt{sampler\_hpo.py}: Script de muestreo uniforme del espacio continuo-discreto con filtro de divisibilidad de hardware.
+        \item \texttt{train\_hpo.py}: Script wrapper que gestiona el entrenamiento de 5 pliegues y persiste atómicamente los resultados con bloqueo de archivos (\texttt{fcntl}).
+        \item \texttt{generate\_qubo.py}: Módulo de ajuste de regresión regularizada Lasso L1 LARS Cross-Validation para construir el QUBO.
+        \item \texttt{solve\_bayes\_opt.py}: Solucionador clásico mediante procesos gaussianos.
+        \item \texttt{solve\_vqe.py}: Solucionador cuántico variacional VQE empleando el simulador MPS o la QPU real.
+        \item \texttt{solve\_qite.py}: Solucionador cuántico VarQITE resolviendo la ecuación de McLachlan con integrador de Euler de paso fijo.
+        \item \texttt{generate\_plots.py}: Módulo encargado de compilar los CSV y renderizar las gráficas del TFG.
+        \item \texttt{train.ipynb}: Cuaderno Jupyter de soporte rápido para entrenamientos manuales e interactivos.
+        \item \textbf{\texttt{data\_processors/}}: Carpeta que contiene la tubería de formateo y carga de logs:
+        \begin{itemize}
+            \item \texttt{attributes.py}: Extractor de tipos de atributos categóricos y numéricos.
+            \item \texttt{event\_logs.py}: Cargador del log XES y mapeador de marcas de tiempo del proceso.
+        \end{itemize}
     \end{itemize}
 
-    \item \textbf{Orquestación HPC (\texttt{slurm/})}: Colección de scripts \textit{bash} para el gestor Slurm en el clúster FinisTerrae III del CESGA.
+    \item \textbf{Gestión de Datos (\texttt{data/})}: Almacenamiento de logs de eventos, matrices y pesos neuronales:
     \begin{itemize}
-        \item \texttt{setup\_env.sh}: Instalador aislado del entorno virtual (\texttt{tfg\_env}) en la partición Store.
-        \item \texttt{launch\_hpo.sh}: Plantilla de envío de array de trabajos paralelos (1-100) en GPUs NVIDIA A100.
-        \item \texttt{run\_bayes\_opt.sh}, \texttt{run\_vqe.sh}, \texttt{run\_qite.sh}: Envío de resolvedores en FT3.
-        \item \texttt{run\_vqe\_qmio.sh}, \texttt{run\_qite\_qmio.sh}: Orquestadores de envío en la QPU real de Qmio.
+        \item \texttt{resultados\_hpo.csv}: Historial maestro con el pool clásico de HPO y sus 300 experimentos base.
+        \item \texttt{matriz\_qubo.csv}: Matriz binaria simétrica $Q$ (30x30) de acoplamiento cuántico.
+        \item \texttt{metricas\_qubo.json}: Archivo que almacena la configuración del espacio, RMSE y el multiplicador de Lagrange $\lambda$.
+        \item \textbf{\texttt{models/}}: Carpeta que almacena los pesos preentrenados del predictor (\texttt{env\_permit\_fold0\_event\_predictor.pth}).
+        \item \textbf{\texttt{event\_log/}}: Directorio con las trazas de minería de procesos:
+        \begin{itemize}
+            \item \texttt{attributes.yaml}: Definición semántica de actividades, recursos y tiempos.
+            \item \texttt{env\_permit.xes.gz}: Registro de eventos original comprimido.
+            \item \texttt{window\_sizes.json}: Configuración de tamaño de ventana para el EventTransformer.
+            \item \textbf{\texttt{splitted/}}: Trazas divididas en 5 folds para validación cruzada, conteniendo los archivos en formato XES \texttt{train\_foldX}, \texttt{val\_foldX} y \texttt{test\_foldX} (donde $X \in \{0, 1, 2, 3, 4\}$).
+        \end{itemize}
     \end{itemize}
 
-    \item \textbf{Datos de Entrada (\texttt{data/})}: Almacenamiento de matrices y datos de entrenamiento.
+    \item \textbf{Resultados e Imágenes (\texttt{resultados/})}:
     \begin{itemize}
-        \item \texttt{resultados\_hpo.csv}: Historial del pool clásico de HPO con las 300 evaluaciones.
-        \item \texttt{matriz\_qubo.csv}: Matriz $Q$ de coeficientes de acoplamiento cuadrático.
-        \item \texttt{metricas\_qubo.json}: Metadatos del ajuste Lasso y multiplicador de Lagrange $\lambda$.
-        \item \textbf{\texttt{event\_log/}}: Carpeta que almacena las trazas crudas y particionadas en XES de \textit{env\_permit}.
+        \item \texttt{resultados\_soluciones\_reales.csv}: Base de datos unificada que consolida las 55 soluciones.
+        \item \texttt{resultados\_bayes\_opt.csv}: Salida de la Optimización Bayesiana clásica (5 semillas).
+        \item \texttt{resultados\_vqe\_sweep.csv} y \texttt{resultados\_qite\_sweep.csv}: Resultados de barrido de ruido en FT3.
+        \item \texttt{resultados\_vqe\_qmio.csv} y \texttt{resultados\_qite\_qmio.csv}: Resultados físicos en la QPU de Qmio.
+        \item Gráficos de salida en alta resolución: \texttt{comparativa\_tiempos.png}, \texttt{comparativa\_energia.png}, \texttt{comparativa\_factibilidad.png}, \texttt{impacto\_ruido\_factibilidad.png}, \texttt{promedio\_violaciones.png}, \texttt{comparativa\_tiempos\_semillas.png}, \texttt{degradacion\_tiempo\_ruido.png} y \texttt{comparativa\_energia\_desglosada.png}.
     \end{itemize}
-    
-    \item \textbf{Resultados Consolidados (\texttt{resultados/})}: Registro de telemetría final consolidado y figuras en alta resolución.
+
+    \item \textbf{Orquestación HPC (\texttt{slurm/})}: Colección de scripts de envío a colas mediante Slurm:
     \begin{itemize}
-        \item \texttt{resultados\_soluciones\_reales.csv}: Base de datos unificada de las 55 soluciones óptimas.
-        \item Archivos CSV individuales por solver y figuras de visualización comparativa (Pareto, factibilidad, etc.).
+        \item \texttt{setup\_env.sh}: Instalador automatizado del entorno virtual aislado con CUDA.
+        \item \texttt{launch\_hpo.sh}: Script array de Slurm (tareas 1-100) para procesar el pool clásico HPO.
+        \item \texttt{run\_bayes\_opt.sh}, \texttt{run\_vqe.sh}, \texttt{run\_qite.sh}: Envíos para resolvedores en la partición clásica.
+        \item \texttt{run\_vqe\_qmio.sh}, \texttt{run\_qite\_qmio.sh}: Enrutadores para ejecutar VQE y VarQITE en Qmio.
     \end{itemize}
 
     \item \textbf{Documentación (\texttt{docs/})}:
     \begin{itemize}
-        \item Ficheros LaTeX y borradores Markdown de soporte metodológico.
+        \item \texttt{Formula QUBO.png}: Render gráfico del Hamiltoniano de Ising.
+        \item \texttt{GrIA\_TFG\_Modelo\_A\_Memoria.pdf}: PDF con el borrador de la memoria.
+        \item \texttt{QUBO\_MultiObjective\_Formulation.md}: Borrador markdown de la formulación multiobjetivo.
+        \item \texttt{TFG\_Master\_Report_HPO.md}: Reporte maestro del proyecto.
+        \item \texttt{resumen\_abstract.tex}: Archivo LaTeX del resumen de la tesis.
+        \item \texttt{validacion\_pruebas.tex}: LaTeX del Capítulo 5 de Validación de resolvedores.
+        \item \texttt{manuales\_tecnicos.tex}: LaTeX del presente Apéndice A.
     \end{itemize}
 \end{itemize}
 
