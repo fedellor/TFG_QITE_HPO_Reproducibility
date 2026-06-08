@@ -4,9 +4,9 @@ Esta carpeta contiene la documentación académica, guías teóricas, borradores
 
 ## Archivos de Documentación
 
-*   **`capitulo5.tex`**: Archivo fuente en LaTeX correspondiente al **Capítulo 5** de la memoria (Validación y Pruebas). Contiene el análisis detallado del tiempo de ejecución, precisión y frontera de Pareto.
 *   **`manuales_tecnicos.tex`**: Archivo fuente en LaTeX correspondiente al **Apéndice A** de la memoria de la tesis. Detalla de forma exhaustiva la estructura del repositorio y los manuales de reproducción paso a paso.
-*   **`resumen_abstract.tex`**: Archivo fuente en LaTeX con el resumen académico estructurado en español e inglés.
+*   **`resumen_abstract.tex`**: Archivo fuente en LaTeX con el resumen académico estructurado de la tesis.
+*   **`agradecimientos.tex`**: Archivo fuente en LaTeX con los agradecimientos institucionales y personales.
 *   **`TFG_Master_Report_HPO.md`**: Reporte técnico exhaustivo y borrador markdown del proyecto global.
 *   **`QUBO_MultiObjective_Formulation.md`**: Formulación multiobjetivo y justificación física de la construcción de la función de coste cuadrática con Lagrange.
 *   **`GrIA_TFG_Modelo_A_Memoria.pdf`**: Copia en formato PDF de la memoria académica oficial compilada.

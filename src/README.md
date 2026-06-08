@@ -23,5 +23,11 @@ Esta carpeta contiene la implementación íntegra del pipeline algorítmico del 
 ## Subdirectorios
 
 *   **`data_processors/`**:
-    *   `attributes.py`: Extractor de tipos de atributos de eventos categóricos e índices lógicos.
-    *   `event_logs.py`: Mapeador lógico del registro de eventos estructurado en formato XES.
+    *   `attributes.py`: Extractor de tipos de atributos de eventos categóricos e índices lógicos. Utiliza `scikit-learn` (\texttt{StandardScaler}) para normalización de características continuas.
+    *   `event_logs.py`: Mapeador lógico del registro de eventos estructurado en formato XES usando `pm4py`.
+
+## Requisitos de Entorno y Dependencias
+
+* **Entorno de Redes Deep Learning (GPUs A100)**: Corre bajo **Python 3.10.8** usando `torch` y `cuda` para entrenar y evaluar el EventTransformer (\texttt{train\_hpo.py}, \texttt{embeddings.py}, \texttt{encoders\_and\_decoders.py}, \texttt{output\_layers.py}, \texttt{training.py}, \texttt{evaluation.py}, \texttt{utils.py}).
+* **Entorno de Optimización Cuántica (Qmio / FT3)**: Requiere estrictamente **Python 3.9.9** por dependencias físicas de control del criostato en `qmiotools` para la resolución de VQE y VarQITE (\texttt{solve\_vqe.py}, \texttt{solve\_qite.py}).
+* **Visualización de Resultados**: \texttt{generate\_plots.py} unifica los CSVs procesando los datos con `pandas` y `numpy`, renderizando los gráficos científicos mediante `matplotlib` (sin uso de `seaborn`).

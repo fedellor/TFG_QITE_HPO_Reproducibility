@@ -84,6 +84,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{QUBO\_MultiObjective\_Formulation.md}: Borrador markdown de la formulación multiobjetivo.
         \item \texttt{TFG\_Master\_Report_HPO.md}: Reporte maestro del proyecto.
         \item \texttt{resumen\_abstract.tex}: Archivo LaTeX del resumen de la tesis.
+        \item \texttt{agradecimientos.tex}: Archivo LaTeX de los agradecimientos del trabajo.
         \item \texttt{manuales\_tecnicos.tex}: LaTeX del presente Apéndice A.
         \item \texttt{README.md}: Documento descriptivo de los informes, borradores y fuentes de documentación del proyecto.
     \end{itemize}
@@ -91,7 +92,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
 
 \section{Creación del entorno}
 
-Para asegurar la estabilidad en la reproducción de los cálculos y evitar conflictos de dependencias, se recomienda utilizar Python 3.10 y gestionar el entorno en el clúster. 
+Para asegurar la estabilidad en la reproducción de los cálculos y evitar conflictos de dependencias, se distingue el uso de dos entornos de ejecución en el clúster: por un lado, se utiliza \textbf{Python 3.10.8} para la fase clásica de aprendizaje profundo y entrenamiento HPO masivo sobre las GPUs NVIDIA A100 del FinisTerrae III; por otro lado, se requiere estrictamente el uso de \textbf{Python 3.9.9} para la fase de resolución cuántica (tanto simulación como conexión directa a la QPU de Qmio) para garantizar la compatibilidad con el middleware de control cuántico \texttt{qmiotools}.
 
 \vspace{0.5cm}
 Las instrucciones para inicializar el entorno virtual desde una terminal en FT3 son:

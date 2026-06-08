@@ -4,6 +4,9 @@ Esta carpeta compila las tablas de rendimiento experimental y almacena las repre
 
 ## Archivos de Resultados (CSVs)
 
+> [!NOTE]
+> **Formato de la Métrica RMSE**: Todos los archivos CSV de resultados que se listan a continuación han sido unificados y validados de modo que la columna `RMSE` (que representa el error del modelo final) se encuentra ubicada como la **última columna** de cada archivo, con valores reales de validación cruzada y sin ningún marcador temporal del tipo `NaN` o `-1.0`.
+
 *   **`resultados_soluciones_reales.csv`**: Tabla unificada que consolida las 55 soluciones óptimas entrenadas de forma real en la GPU del CESGA para las 5 semillas, cruzando tiempo y precisión real.
 *   **`resultados_bayes_opt.csv`**: Resultados experimentales de la optimización clásica basada en procesos gaussianos.
 *   **`resultados_vqe_sweep.csv`**: Barrido experimental del impacto del ruido cuántico sobre el algoritmo VQE simulado en FT3.

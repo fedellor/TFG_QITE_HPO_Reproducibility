@@ -35,7 +35,14 @@ El pipeline experimental sigue un flujo híbrido cerrado compuesto por 4 fases o
 ## Guía Rápida de Uso (FT3 CESGA)
 
 ### 1. Inicialización del Entorno
-Conéctese al clúster y configure el entorno virtual aislado en la partición `/Store`:
+Conéctese al clúster y configure el entorno virtual aislado en la partición `/Store`. 
+
+> [!IMPORTANT]
+> **Compatibilidad de Python**:
+> * **Fase Clásica (Deep Learning/HPO)**: Certificada y ejecutada en **Python 3.10.8** sobre las GPUs NVIDIA A100.
+> * **Fase Cuántica (Simulación/QPU Qmio)**: Requiere estrictamente **Python 3.9.9** para garantizar la compatibilidad con el middleware de control de criostato \texttt{qmiotools}.
+
+Para inicializar el entorno virtual y configurar las dependencias:
 ```bash
 git clone https://github.com/fedellor/TFG_QITE_HPO_Reproducibility.git
 cd TFG_QITE_HPO_Reproducibility

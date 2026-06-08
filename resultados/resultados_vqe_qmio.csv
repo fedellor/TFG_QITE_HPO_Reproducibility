@@ -1,6 +1,6 @@
-Semilla,Energia_QUBO,Energia_Real_Estimada,Tiempo_Segundos,Violaciones_OneHot,Factible,Explorada,Precision_Real_HPO,Tiempo_Real_HPO,Loss_Real_HPO,BATCH_SIZE,LEARNING_RATE,EMB_SIZE,ATTN_HEADS,ENC_LAYERS,DEC_LAYERS,RMSE,Profundidad_Circuito,Total_Puertas,Puertas_CNOT,Modelo_Ruido,Escenario_Modo
-7,2.6296,6.5836,1416.046,2,0,1,0.873467,1287.72,1.281325,16,0.0001,64,8,4,1,7.187875,31,89,29,Qmio Hardware / FakeQmio,qmio
-42,1.3027,5.2567,1722.211,3,0,1,0.502236,896.41,3.103684,32,0.001,256,1,4,1,5.861011,31,89,29,Qmio Hardware / FakeQmio,qmio
-99,1.318,5.272,1827.435,4,0,1,0.863455,159.19,1.360095,256,0.001,64,8,1,4,5.876267,31,89,29,Qmio Hardware / FakeQmio,qmio
-123,2.631,6.585,1425.432,5,0,1,0.871736,783.55,1.228956,16,0.0001,64,4,1,1,7.189294,31,89,29,Qmio Hardware / FakeQmio,qmio
-1001,1.3332,5.2872,1579.007,1,0,1,0.869701,818.71,1.298684,32,0.0001,128,1,6,1,5.891467,31,89,29,Qmio Hardware / FakeQmio,qmio
+Semilla,Energia_QUBO,Energia_Real_Estimada,Tiempo_Segundos,Violaciones_OneHot,Factible,Explorada,Precision_Real_HPO,Tiempo_Real_HPO,Loss_Real_HPO,BATCH_SIZE,LEARNING_RATE,EMB_SIZE,ATTN_HEADS,ENC_LAYERS,DEC_LAYERS,Profundidad_Circuito,Total_Puertas,Puertas_CNOT,Modelo_Ruido,Escenario_Modo,RMSE
+7,2.6296,6.5836,1416.046,2,0,1,0.873467,1287.72,1.281325,16,0.0001,64,8,4,1,31,89,29,Qmio Hardware / FakeQmio,qmio,7.187875
+42,1.3027,5.2567,1722.211,3,0,1,0.502236,896.41,3.103684,32,0.001,256,1,4,1,31,89,29,Qmio Hardware / FakeQmio,qmio,5.861011
+99,1.318,5.272,1827.435,4,0,1,0.863455,159.19,1.360095,256,0.001,64,8,1,4,31,89,29,Qmio Hardware / FakeQmio,qmio,5.876267
+123,2.631,6.585,1425.432,5,0,1,0.871736,783.55,1.228956,16,0.0001,64,4,1,1,31,89,29,Qmio Hardware / FakeQmio,qmio,7.189294
+1001,1.3332,5.2872,1579.007,1,0,1,0.869701,818.71,1.298684,32,0.0001,128,1,6,1,31,89,29,Qmio Hardware / FakeQmio,qmio,5.891467
