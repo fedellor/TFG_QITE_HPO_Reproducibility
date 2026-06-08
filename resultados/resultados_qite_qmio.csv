@@ -1,5 +1,5 @@
 Semilla,Energia_QUBO,Energia_Real_Estimada,Tiempo_Segundos,Violaciones_OneHot,Factible,Explorada,Precision_Real_HPO,Tiempo_Real_HPO,BATCH_SIZE,LEARNING_RATE,EMB_SIZE,ATTN_HEADS,ENC_LAYERS,DEC_LAYERS,RMSE,Profundidad_Circuito,Total_Puertas,Puertas_CNOT,Modelo_Ruido,Escenario_Modo
-7,16.0052,19.9592,218.809,0,1,0,-1.0,-1.0,256,0.0001,1024,2,2,4,-1.0,31,89,29,Escenario: qmio,qmio
+7,16.0052,19.9592,218.809,0,1,0,0.8489,2464.5,256,0.0001,1024,2,2,4,1.413605,31,89,29,Escenario: qmio,qmio
 42,15.9933,19.9473,222.78,0,1,0,0.86121,864.88,128,5e-05,1024,8,1,1,1.344684,31,89,29,Escenario: qmio,qmio
 99,16.0311,19.9851,224.042,0,1,1,0.165886,2679.25,32,0.001,512,1,2,2,5.668631,31,89,29,Escenario: qmio,qmio
 123,15.9737,19.9277,223.167,0,1,1,0.876096,857.74,64,5e-05,256,4,2,3,1.284004,31,89,29,Escenario: qmio,qmio

@@ -1,8 +1,8 @@
 Semilla,Energia_QUBO,Energia_Real_Estimada,Tiempo_Segundos,Violaciones_OneHot,Factible,Explorada,Precision_Real_HPO,Tiempo_Real_HPO,BATCH_SIZE,LEARNING_RATE,EMB_SIZE,ATTN_HEADS,ENC_LAYERS,DEC_LAYERS,RMSE,Profundidad_Circuito,Total_Puertas,Puertas_CNOT,Modelo_Ruido,Escenario_Modo,Loss_Real_HPO
-7,16.0052,19.9592,1039.076,0,1,0,-1.0,-1.0,256,0.0001,1024,2,2,4,20.5635,31,89,29,Sin ruido (Ideal),ideal,-1.0
-7,16.0052,19.9592,18759.901,0,1,0,-1.0,-1.0,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.01%, 2q=0.1%, ro=0.2%) [Reverse ideal reference]",low,-1.0
-7,16.0052,19.9592,19013.104,0,1,0,-1.0,-1.0,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.05%, 2q=0.5%, ro=0.5%) [Reverse ideal reference]",medium,-1.0
-7,16.0052,19.9592,19261.876,0,1,0,-1.0,-1.0,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.1%, 2q=1.0%, ro=1.0%) [Reverse ideal reference]",high,-1.0
+7,16.0052,19.9592,1039.076,0,1,0,0.8489,2464.5,256,0.0001,1024,2,2,4,20.5635,31,89,29,Sin ruido (Ideal),ideal,1.413605
+7,16.0052,19.9592,18759.901,0,1,0,0.8489,2464.5,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.01%, 2q=0.1%, ro=0.2%) [Reverse ideal reference]",low,1.413605
+7,16.0052,19.9592,19013.104,0,1,0,0.8489,2464.5,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.05%, 2q=0.5%, ro=0.5%) [Reverse ideal reference]",medium,1.413605
+7,16.0052,19.9592,19261.876,0,1,0,0.8489,2464.5,256,0.0001,1024,2,2,4,20.5635,31,89,29,"Aer depolarizante (1q=0.1%, 2q=1.0%, ro=1.0%) [Reverse ideal reference]",high,1.413605
 42,15.9933,19.9473,1066.95,0,1,0,0.86121,864.88,128,5e-05,1024,8,1,1,20.5516,31,89,29,Sin ruido (Ideal),ideal,1.344684
 42,15.9933,19.9473,20862.895,0,1,0,0.86121,864.88,128,5e-05,1024,8,1,1,20.5516,31,89,29,"Aer depolarizante (1q=0.01%, 2q=0.1%, ro=0.2%) [Reverse ideal reference]",low,1.344684
 42,15.9933,19.9473,21144.597,0,1,0,0.86121,864.88,128,5e-05,1024,8,1,1,20.5516,31,89,29,"Aer depolarizante (1q=0.05%, 2q=0.5%, ro=0.5%) [Reverse ideal reference]",medium,1.344684
