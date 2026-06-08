@@ -74,7 +74,7 @@ def main():
     bars1 = ax1.bar(categories, times_solver, color=colors, edgecolor='black', width=0.55, zorder=3)
     ax1.set_yscale('log')
     ax1.set_ylabel('Tiempo de Ejecución del Solver (Segundos - Escala Log)', fontsize=11, fontweight='bold')
-    ax1.set_title('A. Tiempo de Optimización / Búsqueda (Solver)', fontsize=12, fontweight='bold', pad=12)
+    ax1.set_title('A. Tiempo Medio de Optimización / Búsqueda (Solver)', fontsize=12, fontweight='bold', pad=12)
     ax1.tick_params(axis='x', labelsize=10)
     
     for bar in bars1:
@@ -94,7 +94,7 @@ def main():
     
     bars2 = ax2.bar(categories, times_hpo, color=colors, edgecolor='black', width=0.55, zorder=3)
     ax2.set_ylabel('Tiempo Real de Entrenamiento de Transformers (Segundos)', fontsize=11, fontweight='bold')
-    ax2.set_title('B. Tiempo Medio de Entrenamiento Real en GPU (5 Folds)', fontsize=12, fontweight='bold', pad=12)
+    ax2.set_title('B. Tiempo Medio de Entrenamiento Real en GPU (5-Fold CV)', fontsize=12, fontweight='bold', pad=12)
     ax2.tick_params(axis='x', labelsize=10)
     
     max_hpo_t = max(times_hpo)
@@ -104,7 +104,7 @@ def main():
         height = bar.get_height()
         ax2.text(bar.get_x() + bar.get_width()/2.0, height + (max_hpo_t * 0.02), f'{height:.1f} s', ha='center', va='bottom', fontsize=9.5, fontweight='bold')
 
-    fig.suptitle('Análisis Comparativo de Tiempos: Optimización de Hiperparámetros vs. Entrenamiento Real', fontsize=14, fontweight='bold', y=0.98)
+    fig.suptitle('Análisis Comparativo de Tiempos Medios: Optimización vs. Entrenamiento Real en GPU', fontsize=14, fontweight='bold', y=0.98)
     plt.tight_layout()
     plt.savefig(os.path.join(res_dir, "comparativa_tiempos.png"), dpi=300)
     plt.close()
@@ -149,7 +149,7 @@ def main():
 
     bars = plt.bar(categories_f, rates, color=colors_f, edgecolor='black', width=0.5, zorder=3)
     plt.ylabel('Tasa de Factibilidad (% de soluciones sin violar One-Hot)', fontsize=12, fontweight='bold')
-    plt.title('Tasa de Factibilidad (QUBO One-Hot) en la QPU Física', fontsize=14, fontweight='bold', pad=15)
+    plt.title('Tasa Media de Factibilidad (QUBO One-Hot) en la QPU Física', fontsize=14, fontweight='bold', pad=15)
     plt.ylim(0, 110)
     plt.xticks(fontsize=11, fontweight='bold')
     
@@ -183,7 +183,7 @@ def main():
     
     plt.ylabel('Tasa de Factibilidad (% de soluciones factibles)', fontsize=12, fontweight='bold')
     plt.xlabel('Nivel de Ruido en Simulación', fontsize=12, fontweight='bold')
-    plt.title('Impacto del Ruido en la Factibilidad: VQE vs. VarQITE', fontsize=14, fontweight='bold', pad=15)
+    plt.title('Impacto del Ruido en la Tasa Media de Factibilidad: VQE vs. VarQITE', fontsize=14, fontweight='bold', pad=15)
     plt.ylim(-5, 105)
     plt.legend(fontsize=11)
     plt.xticks(fontsize=11, fontweight='bold')
@@ -291,7 +291,7 @@ def main():
     plt.yscale('log')
     plt.ylabel('Tiempo de Ejecución (Segundos - Escala Log)', fontsize=12, fontweight='bold')
     plt.xlabel('Nivel de Ruido en Simulación', fontsize=12, fontweight='bold')
-    plt.title('Impacto del Ruido en el Tiempo de Simulación (FT3)', fontsize=14, fontweight='bold', pad=15)
+    plt.title('Impacto del Ruido en el Tiempo Medio de Simulación (FT3)', fontsize=14, fontweight='bold', pad=15)
     plt.legend(fontsize=11)
     plt.xticks(fontsize=11, fontweight='bold')
 
@@ -324,7 +324,7 @@ def main():
     rects2 = plt.bar(x + width/2, total_energies, width, label='Energía Total (con Penalización de Lagrange)', color='#d62728', edgecolor='black', zorder=3)
 
     plt.ylabel('Energía del QUBO (Menor es mejor)', fontsize=12, fontweight='bold')
-    plt.title('Paradoja de la Factibilidad: Rendimiento Raw vs. Energía Total con Penalización', fontsize=14, fontweight='bold', pad=15)
+    plt.title('Paradoja de la Factibilidad: Rendimiento Medio Raw vs. Energía Media Total con Penalización', fontsize=14, fontweight='bold', pad=15)
     plt.xticks(x, categories_d, fontsize=11, fontweight='bold')
     plt.legend(fontsize=11, loc='upper left')
     
@@ -348,10 +348,8 @@ def main():
     plt.savefig(os.path.join(res_dir, "comparativa_energia_desglosada.png"), dpi=300)
     plt.close()
 
-    # --- PLOT 9: PARETO FRONTIER (ACCURACY VS TIME) ---
-    plt.figure(figsize=(11, 7))
-    ax = plt.gca()
-    ax.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
+    # --- PLOT 9: PARETO FRONTIER (ACCURACY VS TIME - TWO SUBPLOTS) ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7.5))
     
     reales_csv = os.path.join(res_dir, "resultados_soluciones_reales.csv")
     reales_df = pd.read_csv(reales_csv)
@@ -384,13 +382,10 @@ def main():
             if not df_g.empty:
                 ax_obj.scatter(
                     df_g['Execution_Time_Seconds'], df_g['Final_Accuracy'],
-                    color=g['color'], marker=g['marker'], s=100, edgecolor='black', alpha=0.85,
+                    color=g['color'], marker=g['marker'], s=90, edgecolor='black', alpha=0.85,
                     label=g['label'], zorder=3
                 )
 
-    # Plot all 55 solutions
-    plot_scatter_on_ax(ax, reales_df)
-    
     # Compute Pareto Frontier (minimizing time, maximizing accuracy)
     all_points = list(zip(reales_df['Execution_Time_Seconds'].values, reales_df['Final_Accuracy'].values))
     sorted_points = sorted(all_points, key=lambda x: (x[0], -x[1]))
@@ -401,36 +396,70 @@ def main():
             pareto_front.append(pt)
             max_acc = pt[1]
 
+    ticks_x = [100, 150, 250, 400, 600, 1000, 1600, 2500, 4500, 6000]
+
+    # Subplot 1: All 55 solutions (Vista General)
+    ax1.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
+    plot_scatter_on_ax(ax1, reales_df)
+    
     if pareto_front:
         pareto_x, pareto_y = zip(*pareto_front)
-        ax.plot(
+        ax1.plot(
             pareto_x, pareto_y, '--', color='#d62728', linewidth=2.5, alpha=0.9,
             label='Frontera de Pareto (Eficiente)', zorder=4
         )
-        ax.scatter(
-            pareto_x, pareto_y, facecolors='none', edgecolors='#d62728', s=200,
+        ax1.scatter(
+            pareto_x, pareto_y, facecolors='none', edgecolors='#d62728', s=180,
             linewidths=2.2, zorder=5, label='Solución Pareto-Optimal'
         )
 
-    ax.set_xscale('log')
-    ticks_x = [100, 150, 250, 400, 600, 1000, 1600, 2500, 4500, 6000]
-    ax.set_xticks(ticks_x)
-    # Set explicit labels to ensure every tick is printed and detailed at the bottom
-    ax.set_xticklabels([str(t) for t in ticks_x], fontsize=10, fontweight='bold')
+    ax1.set_xscale('log')
+    ax1.set_xticks(ticks_x)
+    ax1.set_xticklabels([str(t) for t in ticks_x], fontsize=10, fontweight='bold')
+    ax1.set_xlim(90, 6800)
+    ax1.set_ylim(0.10, 0.95)
     
-    ax.set_xlim(90, 6800)
-    ax.set_ylim(0.10, 0.95)
+    ticks_y_ax1 = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.85, 0.90, 0.95]
+    ax1.set_yticks(ticks_y_ax1)
+    ax1.set_yticklabels([f"{val:.2f}" for val in ticks_y_ax1], fontsize=10, fontweight='bold')
     
-    # Custom y-ticks to make it very clear
-    ticks_y = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.82, 0.84, 0.86, 0.88, 0.90, 0.92, 0.94]
-    ax.set_yticks(ticks_y)
-    ax.set_yticklabels([f"{val:.2f}" for val in ticks_y], fontsize=10, fontweight='bold')
+    ax1.set_xlabel('Tiempo Medio de Entrenamiento (Segundos - Escala Log)', fontsize=11, fontweight='bold')
+    ax1.set_ylabel('Precisión Media del Transformer (Accuracy)', fontsize=11, fontweight='bold')
+    ax1.set_title('A. Vista General (Todas las 55 Soluciones - Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
+    ax1.legend(fontsize=9, loc='lower left')
 
-    ax.set_xlabel('Tiempo de Entrenamiento en GPU (Segundos - Escala Logarítmica)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Precisión Real del Transformer (Accuracy)', fontsize=12, fontweight='bold')
-    ax.set_title('Frontera de Pareto HPO: Compromiso entre Precisión Real y Tiempo de Entrenamiento', fontsize=14, fontweight='bold', pad=15)
-    ax.legend(fontsize=10, loc='lower left')
+    # Subplot 2: Zoom on the Pareto frontier (Accuracy > 0.70)
+    ax2.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
+    filtered_df = reales_df[reales_df['Final_Accuracy'] > 0.70]
+    plot_scatter_on_ax(ax2, filtered_df)
     
+    if pareto_front:
+        pareto_x, pareto_y = zip(*pareto_front)
+        ax2.plot(
+            pareto_x, pareto_y, '--', color='#d62728', linewidth=2.5, alpha=0.9,
+            label='Frontera de Pareto (Eficiente)', zorder=4
+        )
+        ax2.scatter(
+            pareto_x, pareto_y, facecolors='none', edgecolors='#d62728', s=180,
+            linewidths=2.2, zorder=5, label='Solución Pareto-Optimal'
+        )
+
+    ax2.set_xscale('log')
+    ax2.set_xticks(ticks_x)
+    ax2.set_xticklabels([str(t) for t in ticks_x], fontsize=10, fontweight='bold')
+    ax2.set_xlim(90, 6800)
+    ax2.set_ylim(0.78, 0.90)
+    
+    ticks_y_ax2 = [0.78, 0.80, 0.82, 0.84, 0.86, 0.88, 0.90]
+    ax2.set_yticks(ticks_y_ax2)
+    ax2.set_yticklabels([f"{val:.2f}" for val in ticks_y_ax2], fontsize=10, fontweight='bold')
+    
+    ax2.set_xlabel('Tiempo Medio de Entrenamiento (Segundos - Escala Log)', fontsize=11, fontweight='bold')
+    ax2.set_ylabel('Precisión Media del Transformer (Accuracy)', fontsize=11, fontweight='bold')
+    ax2.set_title('B. Detalle de la Frontera de Pareto (Zoom - Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
+    ax2.legend(fontsize=9, loc='lower right')
+
+    fig.suptitle('Frontera de Pareto HPO: Compromiso entre Precisión Media y Tiempo Medio de Entrenamiento (5-Fold CV)', fontsize=14, fontweight='bold', y=0.98)
     plt.tight_layout()
     plt.savefig(os.path.join(res_dir, "frontera_pareto.png"), dpi=300)
     plt.close()
