@@ -428,10 +428,9 @@ def main():
     ax1.set_title('A. Vista General (Todas las 55 Soluciones - Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
     ax1.legend(fontsize=9, loc='lower left')
 
-    # Subplot 2: Zoom on the Pareto frontier (Accuracy > 0.70)
+    # Subplot 2: Zoom on the active Pareto frontier area (X < 2000, Y > 0.83)
     ax2.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
-    filtered_df = reales_df[reales_df['Final_Accuracy'] > 0.70]
-    plot_scatter_on_ax(ax2, filtered_df)
+    plot_scatter_on_ax(ax2, reales_df)
     
     if pareto_front:
         pareto_x, pareto_y = zip(*pareto_front)
@@ -445,18 +444,19 @@ def main():
         )
 
     ax2.set_xscale('log')
-    ax2.set_xticks(ticks_x)
-    ax2.set_xticklabels([str(t) for t in ticks_x], fontsize=10, fontweight='bold')
-    ax2.set_xlim(90, 6800)
-    ax2.set_ylim(0.78, 0.90)
+    ticks_x_zoom = [100, 150, 250, 400, 600, 1000, 1600, 2000]
+    ax2.set_xticks(ticks_x_zoom)
+    ax2.set_xticklabels([str(t) for t in ticks_x_zoom], fontsize=10, fontweight='bold')
+    ax2.set_xlim(90, 2100)
+    ax2.set_ylim(0.83, 0.895)
     
-    ticks_y_ax2 = [0.78, 0.80, 0.82, 0.84, 0.86, 0.88, 0.90]
+    ticks_y_ax2 = [0.83, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 0.895]
     ax2.set_yticks(ticks_y_ax2)
-    ax2.set_yticklabels([f"{val:.2f}" for val in ticks_y_ax2], fontsize=10, fontweight='bold')
+    ax2.set_yticklabels([f"{val:.3f}" for val in ticks_y_ax2], fontsize=10, fontweight='bold')
     
     ax2.set_xlabel('Tiempo Medio de Entrenamiento (Segundos - Escala Log)', fontsize=11, fontweight='bold')
     ax2.set_ylabel('Precisión Media del Transformer (Accuracy)', fontsize=11, fontweight='bold')
-    ax2.set_title('B. Detalle de la Frontera de Pareto (Zoom - Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
+    ax2.set_title('B. Zoom en la Frontera de Pareto (Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
     ax2.legend(fontsize=9, loc='lower right')
 
     fig.suptitle('Frontera de Pareto HPO: Compromiso entre Precisión Media y Tiempo Medio de Entrenamiento (5-Fold CV)', fontsize=14, fontweight='bold', y=0.98)
