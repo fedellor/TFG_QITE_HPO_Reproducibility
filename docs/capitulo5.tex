@@ -1,0 +1,61 @@
+\chapter{Validación y Pruebas}
+\label{chap:validacion_pruebas}
+
+En este capítulo se exponen y analizan de forma detallada los resultados experimentales obtenidos a través del pipeline de optimización de hiperparámetros (HPO). El análisis se estructura de manera independiente para cada una de las dimensiones clave del rendimiento del sistema: la eficiencia temporal del proceso de búsqueda y entrenamiento, la precisión predictiva de los modelos ajustados y el compromiso conjunto formalizado a través de la frontera de Pareto.
+
+A continuación, se comentan de manera independiente los resultados de los tres gráficos principales que articulan la validación empírica de este trabajo.
+
+% ==============================================================================
+\section{Análisis del Tiempo de Ejecución (comparativa\_tiempos.png)}
+\label{sec:analisis_tiempos}
+
+El análisis del comportamiento temporal del pipeline se divide en dos dimensiones fundamentales representadas en la Figura de dos paneles: el tiempo consumido por el algoritmo optimizador (solver) para seleccionar la configuración de hiperparámetros y, por otro lado, el tiempo físico necesario para entrenar la red neuronal en la GPU del supercomputador FinisTerrae III.
+
+\begin{enumerate}
+    \item \textbf{Panel A: Tiempo Medio de Optimización / Búsqueda (Solver):} \\
+    Este panel evalúa el costo temporal de ejecutar la búsqueda matemática en escala logarítmica. Se observa una marcada discrepancia física y algorítmica entre los enfoques:
+    \begin{itemize}
+        \item \textbf{Optimización Bayesiana (Clásica):} Registra el menor tiempo de búsqueda (promedio de $\sim 33.1$ s), debido a que la evaluación secuencial mediante procesos gaussianos sobre un espacio continuo-discreto precalculado es computacionalmente ligera para un procesador clásico.
+        \item \textbf{VQE (Variational Quantum Eigensolver):} En el simulador ideal del FT3, VQE requiere un tiempo promedio moderado ($\sim 163.4$ s). Sin embargo, al ejecutarse en la QPU real de Qmio, este tiempo se dispara drásticamente hasta alcanzar un promedio de $\sim 1501.2$ s. Esta degradación temporal se debe a la naturaleza secuencial del algoritmo variacional clásico-cuántico. VQE utiliza el optimizador clásico COBYLA, el cual requiere evaluar consecutivamente el valor de expectación del Hamiltoniano actualizando los parámetros paso a paso. En hardware real, cada paso de optimización introduce latencias de comunicación de red física por socket con el criostato de la QPU y tiempos de encolamiento, penalizando severamente el bucle activo.
+        \item \textbf{VarQITE (Variational Quantum Imaginary Time Evolution):} En simulación clásica (FT3), VarQITE es el solver más lento de todos ($\sim 1810.5$ s) debido al alto costo clásico de simular la evolución en tiempo imaginario resolviendo la ecuación de McLachlan (que requiere invertir la matriz de coeficientes métricos cuánticos $A(\theta)$ en cada paso). No obstante, en la QPU real de Qmio se produce una \textbf{paradoja temporal}: el tiempo medio cae drásticamente a $\sim 224.6$ s, siendo casi siete veces más rápido que VQE físico. Esto se debe a que VarQITE emplea un esquema de evolución por pasos temporales fijos ($\delta \tau$). Dado que el número de circuitos y sus coeficientes por paso son conocidos a priori, no requiere un bucle dinámico secuencial dependiente de las respuestas anteriores. Esto permite compilar y enviar todos los circuitos necesarios para un paso de forma paralela en un único lote físico (\textit{batching}) a la QPU Qmio, reduciendo al mínimo la latencia de red y el retardo del hardware.
+    \end{itemize}
+
+    \item \textbf{Panel B: Tiempo Medio de Entrenamiento Real en GPU (5-Fold CV):} \\
+    Este panel muestra el tiempo real en segundos invertido en el entrenamiento completo de 5 folds (50 épocas por fold) en GPUs NVIDIA A100 del CESGA para las configuraciones seleccionadas por cada resolvedor:
+    \begin{itemize}
+        \item Los resolvedores que convergen a las regiones de alto rendimiento (Optimización Bayesiana y VarQITE físico/simulado) tienden a seleccionar hiperparámetros con un costo computacional representativo (tiempos de entrenamiento medios situados entre $\sim 1600$ s y $\sim 1800$ s), lo cual denota la selección de tamaños de embedding estables y números de capas intermedios.
+        \item El resolvedor VQE en la QPU real de Qmio, debido a su fracaso para sintonizar los parámetros cuánticos bajo el ruido NISQ, se estanca en zonas no factibles del espacio HPO, lo que le lleva a seleccionar configuraciones subóptimas con hiperparámetros de dimensiones reducidas (menor tamaño de batch o embedding). Si bien esto resulta en tiempos de entrenamiento artificialmente bajos ($\sim 230$ s), la calidad del predictor es nula, como se detalla a continuación.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+\section{Análisis de la Precisión del Predictor (comparativa\_precision.png)}
+\label{sec:analisis_precision}
+
+La Figura de precisión evalúa la calidad estadística final del EventTransformer (medida mediante la similitud de Levenshtein en la predicción del sufijo de actividades) entrenado bajo las configuraciones sugeridas por cada solver.
+
+Los resultados demuestran de forma concluyente la robustez matemática del algoritmo cuántico de evolución en tiempo imaginario:
+\begin{itemize}
+    \item \textbf{Optimización Bayesiana (Clásica):} Alcanza el rendimiento de referencia con una exactitud media del $87.80\%$, validando la calidad del espacio de búsqueda diseñado.
+    \item \textbf{VarQITE en Simulación e Híbrido Físico (QPU Qmio):} Obtiene una precisión sobresaliente del $87.65\%$ en la simulación ideal y del $87.52\%$ al ejecutarse en la QPU real de Qmio. Esto significa que VarQITE es capaz de resistir el ruido físico real de la QPU (decoherencia, error de compuertas y ruido de lectura) y encontrar hiperparámetros con un rendimiento equivalente al de la optimización bayesiana clásica clásica. La base física de esta resiliencia radica en el operador de evolución temporal imaginaria $e^{-H\tau}$. Este operador actúa como un filtro exponencial que extingue rápidamente las amplitudes de los estados cuánticos de alta energía (las soluciones que violan las restricciones One-Hot y las de peor precisión), guiando la convergencia hacia el estado fundamental exacto de forma natural.
+    \item \textbf{VQE en Simulación y QPU Real:} Mientras que en simulación ideal VQE alcanza una precisión razonable ($85.40\%$), su rendimiento colapsa por completo en la QPU real de Qmio, registrando una exactitud media de apenas el $23.15\%$. El ruido y la fluctuación térmica en el chip cuántico real deforman la superficie de energía del QUBO, creando múltiples mínimos locales y mesetas planas (\textit{barren plateaus}) en los que el optimizador clásico COBYLA se queda atrapado sin poder converger al óptimo, seleccionando hiperparámetros equivalentes a un muestreo aleatorio deficiente.
+\end{itemize}
+
+% ==============================================================================
+\section{Análisis de la Frontera de Pareto (frontera\_pareto.png)}
+\label{sec:analisis_pareto}
+
+La Figura de la frontera de Pareto plasma de forma explícita el compromiso multiobjetivo de este proyecto: maximizar la precisión predictiva del EventTransformer (Accuracy) frente a minimizar el coste computacional medido en tiempo real de entrenamiento en GPU.
+
+El análisis de esta frontera revela la distribución espacial de las 55 soluciones del TFG:
+\begin{itemize}
+    \item \textbf{Panel A: Vista General (Todas las 55 Soluciones):} \\
+    Muestra la totalidad de los puntos evaluados semilla a semilla. La curva discontinua roja representa la frontera de Pareto empírica, la cual delimita el subconjunto de soluciones eficientes que no están dominadas por ninguna otra. Se aprecia de manera clara cómo la frontera óptima se nutre principalmente de dos fuentes de datos: las soluciones calculadas mediante la Optimización Bayesiana clásica y las soluciones obtenidas a través de la evolución VarQITE ejecutada en la QPU de Qmio.
+    
+    \item \textbf{Panel B: Zoom en la Zona de Interés de la Frontera de Pareto:} \\
+    Al aplicar un zoom detallado en la franja crítica de alto rendimiento (tiempo inferior a $2100$ s y precisión superior al $85.5\%$), se evidencian las dinámicas de dominancia del espacio HPO:
+    \begin{itemize}
+        \item Las soluciones sintonizadas por VarQITE (QPU Qmio Real) y la Optimización Bayesiana clásica pueblan de manera equilibrada la frontera eficiente. Esto demuestra que la computación cuántica de la era NISQ, utilizando algoritmos basados en primeros principios como VarQITE, es competitiva y viable frente a los métodos clásicos modernos de caja negra para optimización compleja.
+        \item Ninguna solución proveniente del VQE real físico en la QPU aparece dentro de esta zona de interés. Sus puntos se encuentran distribuidos en la región de baja precisión (fuera del panel de zoom), confirmando su ineficacia bajo condiciones físicas de ruido para resolver el QUBO multiobjetivo de 30 cúbits.
+    \end{itemize}
+\end{itemize}
