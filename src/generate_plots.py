@@ -348,33 +348,36 @@ def main():
     plt.savefig(os.path.join(res_dir, "comparativa_energia_desglosada.png"), dpi=300)
     plt.close()
 
-    # --- PLOT 9: PARETO FRONTIER (ACCURACY VS TIME) ---
+    # --- PLOT 9: PARETO FRONTIER (ACCURACY VS TIME - SCATTER PLOT) ---
     plt.figure(figsize=(10.5, 6.5))
-    plt.grid(True, linestyle='--', alpha=0.5, zorder=0)
+    plt.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
 
     reales_csv = os.path.join(res_dir, "resultados_soluciones_reales.csv")
     reales_df = pd.read_csv(reales_csv)
 
+    # Filter out failed runs (Accuracy < 0.70) to prevent compressing the high-performance region
+    filtered_df = reales_df[reales_df['Final_Accuracy'] > 0.70]
+
     # Define groups for custom scatter coloring and shape
     groups = {
         'bayesiana': {
-            'df': reales_df[reales_df['Algoritmo'].str.contains('Bayesiana', case=False)],
+            'df': filtered_df[filtered_df['Algoritmo'].str.contains('Bayesiana', case=False)],
             'color': '#2ca02c', 'marker': 'o', 'label': 'Opt. Bayesiana (Clásica)'
         },
         'vqe-qmio': {
-            'df': reales_df[reales_df['Algoritmo'].str.contains('VQE físico|VQE fisico', case=False)],
+            'df': filtered_df[filtered_df['Algoritmo'].str.contains('VQE físico|VQE fisico', case=False)],
             'color': '#1f77b4', 'marker': '^', 'label': 'VQE QPU (Qmio Real)'
         },
         'vqe-ft3': {
-            'df': reales_df[reales_df['Algoritmo'].str.contains('Simulación VQE Sweep|Simulacion VQE Sweep', case=False)],
+            'df': filtered_df[filtered_df['Algoritmo'].str.contains('Simulación VQE Sweep|Simulacion VQE Sweep', case=False)],
             'color': '#aec7e8', 'marker': 'v', 'label': 'VQE FT3 (Simulación)'
         },
         'qite-qmio': {
-            'df': reales_df[reales_df['Algoritmo'].str.contains('VarQITE físico|VarQITE fisico', case=False)],
+            'df': filtered_df[filtered_df['Algoritmo'].str.contains('VarQITE físico|VarQITE fisico', case=False)],
             'color': '#ff7f0e', 'marker': '>', 'label': 'VarQITE QPU (Qmio Real)'
         },
         'qite-ft3': {
-            'df': reales_df[reales_df['Algoritmo'].str.contains('Simulación VarQITE Sweep|Simulacion VarQITE Sweep', case=False)],
+            'df': filtered_df[filtered_df['Algoritmo'].str.contains('Simulación VarQITE Sweep|Simulacion VarQITE Sweep', case=False)],
             'color': '#ffbb78', 'marker': '<', 'label': 'VarQITE FT3 (Simulación)'
         }
     }
@@ -385,13 +388,13 @@ def main():
         if not df_g.empty:
             plt.scatter(
                 df_g['Execution_Time_Seconds'], df_g['Final_Accuracy'],
-                color=g['color'], marker=g['marker'], s=85, edgecolor='black', alpha=0.85,
+                color=g['color'], marker=g['marker'], s=95, edgecolor='black', alpha=0.85,
                 label=g['label'], zorder=3
             )
 
     # Compute Pareto Frontier
     # Minimize time (x), Maximize accuracy (y)
-    all_points = list(zip(reales_df['Execution_Time_Seconds'].values, reales_df['Final_Accuracy'].values))
+    all_points = list(zip(filtered_df['Execution_Time_Seconds'].values, filtered_df['Final_Accuracy'].values))
     # Sort first by time ascending, then by accuracy descending
     sorted_points = sorted(all_points, key=lambda x: (x[0], -x[1]))
     pareto_front = []
@@ -410,14 +413,23 @@ def main():
         )
         
         plt.scatter(
-            pareto_x, pareto_y, facecolors='none', edgecolors='#d62728', s=180,
-            linewidths=2.0, zorder=5, label='Solución Pareto-Optimal'
+            pareto_x, pareto_y, facecolors='none', edgecolors='#d62728', s=190,
+            linewidths=2.2, zorder=5, label='Solución Pareto-Optimal'
         )
 
-    plt.xlabel('Tiempo de Entrenamiento Real del Transformer (Segundos)', fontsize=12, fontweight='bold')
+    plt.xscale('log')
+    # Custom format for log x-ticks to make them friendly
+    from matplotlib.ticker import FormatStrFormatter, NullFormatter
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%g'))
+    plt.gca().xaxis.set_minor_formatter(NullFormatter())
+    
+    plt.xlabel('Tiempo de Entrenamiento Real del Transformer (Segundos - Escala Log)', fontsize=12, fontweight='bold')
     plt.ylabel('Precisión Real del Transformer (Accuracy)', fontsize=12, fontweight='bold')
-    plt.title('Frontera de Pareto: Compromiso entre Precisión Real y Tiempo de Entrenamiento', fontsize=13, fontweight='bold', pad=15)
+    plt.title('Frontera de Pareto HPO: Compromiso entre Precisión Real y Tiempo de Entrenamiento', fontsize=13, fontweight='bold', pad=15)
     plt.legend(fontsize=9.5, loc='lower right', framealpha=0.9)
+    
+    plt.xlim(100, 6000)
+    plt.ylim(0.78, 0.90) # Symmetrical zoom to clear clutter and separate points beautifully
 
     plt.tight_layout()
     plt.savefig(os.path.join(res_dir, "frontera_pareto.png"), dpi=300)
