@@ -458,7 +458,7 @@ def main():
     ax2.set_xlabel('Tiempo Medio de Entrenamiento (Segundos - Escala Log)', fontsize=11, fontweight='bold')
     ax2.set_ylabel('Precisión Media del Transformer (Accuracy)', fontsize=11, fontweight='bold')
     ax2.set_title('B. Zoom en la Frontera de Pareto (Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
-    ax2.legend(fontsize=9, loc='lower right')
+    ax2.legend(fontsize=9, loc='upper left')
 
     fig.suptitle('Frontera de Pareto HPO: Compromiso entre Precisión Media y Tiempo Medio de Entrenamiento (5-Fold CV)', fontsize=14, fontweight='bold', y=0.98)
     plt.tight_layout()
