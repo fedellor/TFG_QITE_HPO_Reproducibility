@@ -398,7 +398,7 @@ def main():
 
     ticks_x = [100, 150, 250, 400, 600, 1000, 1600, 2500, 4500, 6000]
 
-    # Subplot 1: All 55 solutions (Vista General)
+    # Subplot 1: All 55 solutions (Vista General con zoom optimizado)
     ax1.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
     plot_scatter_on_ax(ax1, reales_df)
     
@@ -414,12 +414,13 @@ def main():
         )
 
     ax1.set_xscale('log')
-    ax1.set_xticks(ticks_x)
-    ax1.set_xticklabels([str(t) for t in ticks_x], fontsize=10, fontweight='bold')
-    ax1.set_xlim(90, 6800)
-    ax1.set_ylim(0.10, 0.95)
+    ticks_x_ax1 = [150, 250, 400, 600, 1000, 1600, 2500, 4500]
+    ax1.set_xticks(ticks_x_ax1)
+    ax1.set_xticklabels([str(t) for t in ticks_x_ax1], fontsize=10, fontweight='bold')
+    ax1.set_xlim(110, 5000)
+    ax1.set_ylim(0.15, 0.90)
     
-    ticks_y_ax1 = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.85, 0.90, 0.95]
+    ticks_y_ax1 = [0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.85, 0.90]
     ax1.set_yticks(ticks_y_ax1)
     ax1.set_yticklabels([f"{val:.2f}" for val in ticks_y_ax1], fontsize=10, fontweight='bold')
     
@@ -428,7 +429,7 @@ def main():
     ax1.set_title('A. Vista General (Todas las 55 Soluciones - Medias 5-Fold)', fontsize=12, fontweight='bold', pad=12)
     ax1.legend(fontsize=9, loc='lower left')
 
-    # Subplot 2: Zoom on the active Pareto frontier area (X < 2000, Y > 0.83)
+    # Subplot 2: Zoom on the active Pareto frontier area (X < 2100, Y entre 0.855 y 0.885)
     ax2.grid(True, linestyle='--', alpha=0.5, zorder=0, which='both')
     plot_scatter_on_ax(ax2, reales_df)
     
@@ -444,13 +445,13 @@ def main():
         )
 
     ax2.set_xscale('log')
-    ticks_x_zoom = [100, 150, 250, 400, 600, 1000, 1600, 2000]
+    ticks_x_zoom = [150, 250, 400, 600, 1000, 1600, 2000]
     ax2.set_xticks(ticks_x_zoom)
     ax2.set_xticklabels([str(t) for t in ticks_x_zoom], fontsize=10, fontweight='bold')
-    ax2.set_xlim(90, 2100)
-    ax2.set_ylim(0.83, 0.895)
+    ax2.set_xlim(110, 2100)
+    ax2.set_ylim(0.855, 0.885)
     
-    ticks_y_ax2 = [0.83, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 0.895]
+    ticks_y_ax2 = [0.855, 0.860, 0.865, 0.870, 0.875, 0.880, 0.885]
     ax2.set_yticks(ticks_y_ax2)
     ax2.set_yticklabels([f"{val:.3f}" for val in ticks_y_ax2], fontsize=10, fontweight='bold')
     
