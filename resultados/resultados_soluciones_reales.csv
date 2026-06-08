@@ -10,7 +10,7 @@ VQE físico (QPU Qmio),99,qmio,256,0.001,64,8,1,4,1.318,0.863455,1.360095,159.19
 VQE físico (QPU Qmio),123,qmio,16,0.0001,64,4,1,1,2.631,0.871736,1.228956,783.55,0,"Entrenado por Slurm GPU (Nuevo, Fila 317)"
 VQE físico (QPU Qmio),1001,qmio,32,0.0001,128,1,6,1,1.3332,0.869701,1.298684,818.71,0,"Entrenado por Slurm GPU (Nuevo, Fila 308)"
 VarQITE físico (QPU Qmio),7,qmio,256,0.0001,1024,2,2,4,16.0052,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
-VarQITE físico (QPU Qmio),42,qmio,128,5e-05,1024,8,1,1,15.9933,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
+VarQITE físico (QPU Qmio),42,qmio,128,5e-05,1024,8,1,1,15.9933,0.86121,1.344684,864.88,1,"Entrenado por Slurm GPU (Nuevo, Fila 320)"
 VarQITE físico (QPU Qmio),99,qmio,32,0.001,512,1,2,2,16.0311,0.165886,5.668631,2679.25,1,"Entrenado por Slurm GPU (Nuevo, Fila 310)"
 VarQITE físico (QPU Qmio),123,qmio,64,5e-05,256,4,2,3,15.9737,0.876096,1.284004,857.74,1,"Entrenado por Slurm GPU (Nuevo, Fila 313)"
 VarQITE físico (QPU Qmio),1001,qmio,32,0.0005,64,4,4,6,16.1162,0.858025,1.326633,1556.57,1,"Entrenado por Slurm GPU (Nuevo, Fila 319)"
@@ -38,10 +38,10 @@ Simulación VarQITE Sweep (FT3) - Ideal,7,ideal,256,0.0001,1024,2,2,4,16.0052,-1
 Simulación VarQITE Sweep (FT3) - Low,7,low,256,0.0001,1024,2,2,4,16.0052,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
 Simulación VarQITE Sweep (FT3) - Medium,7,medium,256,0.0001,1024,2,2,4,16.0052,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
 Simulación VarQITE Sweep (FT3) - High,7,high,256,0.0001,1024,2,2,4,16.0052,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
-Simulación VarQITE Sweep (FT3) - Ideal,42,ideal,128,5e-05,1024,8,1,1,15.9933,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
-Simulación VarQITE Sweep (FT3) - Low,42,low,128,5e-05,1024,8,1,1,15.9933,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
-Simulación VarQITE Sweep (FT3) - Medium,42,medium,128,5e-05,1024,8,1,1,15.9933,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
-Simulación VarQITE Sweep (FT3) - High,42,high,128,5e-05,1024,8,1,1,15.9933,-1.0,-1.0,-1.0,1,Pendiente en cola de Slurm GPU
+Simulación VarQITE Sweep (FT3) - Ideal,42,ideal,128,5e-05,1024,8,1,1,15.9933,0.86121,1.344684,864.88,1,"Entrenado por Slurm GPU (Nuevo, Fila 320)"
+Simulación VarQITE Sweep (FT3) - Low,42,low,128,5e-05,1024,8,1,1,15.9933,0.86121,1.344684,864.88,1,"Entrenado por Slurm GPU (Nuevo, Fila 320)"
+Simulación VarQITE Sweep (FT3) - Medium,42,medium,128,5e-05,1024,8,1,1,15.9933,0.86121,1.344684,864.88,1,"Entrenado por Slurm GPU (Nuevo, Fila 320)"
+Simulación VarQITE Sweep (FT3) - High,42,high,128,5e-05,1024,8,1,1,15.9933,0.86121,1.344684,864.88,1,"Entrenado por Slurm GPU (Nuevo, Fila 320)"
 Simulación VarQITE Sweep (FT3) - Ideal,99,ideal,32,0.001,512,1,2,2,16.0311,0.165886,5.668631,2679.25,1,"Entrenado por Slurm GPU (Nuevo, Fila 310)"
 Simulación VarQITE Sweep (FT3) - Low,99,low,32,0.001,512,1,2,2,16.0311,0.165886,5.668631,2679.25,1,"Entrenado por Slurm GPU (Nuevo, Fila 310)"
 Simulación VarQITE Sweep (FT3) - Medium,99,medium,32,0.001,512,1,2,2,16.0311,0.165886,5.668631,2679.25,1,"Entrenado por Slurm GPU (Nuevo, Fila 310)"

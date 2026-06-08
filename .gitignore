@@ -41,10 +41,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project logs and temporary run files
-logs/*.log
-logs/*.err
-logs/*.out
-logs/orchestrator.log
+logs/
 *.log
 
 # IDE files
