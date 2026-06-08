@@ -423,7 +423,41 @@ def main():
     plt.savefig(os.path.join(res_dir, "frontera_pareto.png"), dpi=300)
     plt.close()
 
-    print("All 9 plots generated successfully in: resultados/")
+    # --- PLOT 10: ACCURACY COMPARISON (HPO QUALITY SUMMARY) ---
+    plt.figure(figsize=(10, 6))
+    plt.grid(True, linestyle='--', alpha=0.6, zorder=0)
+
+    categories_acc = [
+        'Opt. Bayesiana\n(Clásica)', 
+        'VQE\n(Sim. Ideal FT3)', 
+        'VQE\n(QPU Qmio Real)', 
+        'VarQITE\n(Sim. Ideal FT3)', 
+        'VarQITE\n(QPU Qmio Real)'
+    ]
+    accuracies = [
+        bayes_df['Precision_Real_HPO'].mean(),
+        vqe_sweep_df[vqe_sweep_df['Escenario_Modo'] == 'ideal']['Precision_Real_HPO'].mean(),
+        vqe_qmio_df['Precision_Real_HPO'].mean(),
+        qite_sweep_df[qite_sweep_df['Escenario_Modo'] == 'ideal']['Precision_Real_HPO'].mean(),
+        qite_qmio_df['Precision_Real_HPO'].mean()
+    ]
+    colors_acc = ['#2ca02c', '#aec7e8', '#1f77b4', '#ffbb78', '#ff7f0e']
+
+    bars_acc = plt.bar(categories_acc, accuracies, color=colors_acc, edgecolor='black', width=0.55, zorder=3)
+    plt.ylabel('Precisión Media Real del Transformer (Accuracy)', fontsize=12, fontweight='bold')
+    plt.title('Precisión Media Real de los Transformers Ajustados por cada Algoritmo', fontsize=13, fontweight='bold', pad=15)
+    plt.ylim(0, 1.05)
+    plt.xticks(fontsize=10, fontweight='bold')
+    
+    for bar in bars_acc:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2.0, height + 0.02, f'{height*100:.2f}%', ha='center', va='bottom', fontsize=10.5, fontweight='bold')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(res_dir, "comparativa_precision.png"), dpi=300)
+    plt.close()
+
+    print("All 10 plots generated successfully in: resultados/")
 
 if __name__ == "__main__":
     main()
