@@ -16,4 +16,4 @@ Esta carpeta está dedicada a la persistencia de registros de eventos, matrices 
     *   `attributes.yaml`: Definición de atributos de actividad, recursos y ciclo de vida de los logs.
     *   `env_permit.xes.gz`: Registro de eventos real en formato estructurado XES (comprimido en GZIP).
     *   `window_sizes.json`: Configuración de la ventana temporal de autoatención para secuencias del proceso.
-    *   **`splitted/`**: Ficheros XES resultantes de la división en 5 folds para la validación cruzada (`train_foldX.xes`, `val_foldX.xes` y `test_foldX.xes`).
+    *   **`splitted/`**: Ficheros XES resultantes de la división en 5 folds para la validación cruzada (archivos comprimidos `train_foldX_env_permit.xes.gz`, `val_foldX_env_permit.xes.gz` y `test_foldX_env_permit.xes.gz`).

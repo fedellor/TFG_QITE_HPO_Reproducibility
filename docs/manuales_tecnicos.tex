@@ -34,6 +34,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{solve\_qite.py}: Solucionador cuántico VarQITE resolviendo la ecuación de McLachlan con integrador de Euler de paso fijo.
         \item \texttt{generate\_plots.py}: Módulo encargado de compilar los CSV y renderizar las gráficas del TFG.
         \item \texttt{train.ipynb}: Cuaderno Jupyter de soporte rápido para entrenamientos manuales e interactivos.
+        \item \texttt{README.md}: Documento explicativo de la estructura del módulo de código fuente y la función de sus componentes.
         \item \textbf{\texttt{data\_processors/}}: Carpeta que contiene la tubería de formateo y carga de logs:
         \begin{itemize}
             \item \texttt{attributes.py}: Extractor de tipos de atributos categóricos y numéricos.
@@ -46,13 +47,14 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{resultados\_hpo.csv}: Historial maestro con el pool clásico de HPO y sus 300 experimentos base.
         \item \texttt{matriz\_qubo.csv}: Matriz binaria simétrica $Q$ (30x30) de acoplamiento cuántico.
         \item \texttt{metricas\_qubo.json}: Archivo que almacena la configuración del espacio, RMSE y el multiplicador de Lagrange $\lambda$.
+        \item \texttt{README.md}: Documento descriptivo de los conjuntos de datos, modelos entrenados y trazas del proceso.
         \item \textbf{\texttt{models/}}: Carpeta que almacena los pesos preentrenados del predictor (\texttt{env\_permit\_fold0\_event\_predictor.pth}).
         \item \textbf{\texttt{event\_log/}}: Directorio con las trazas de minería de procesos:
         \begin{itemize}
             \item \texttt{attributes.yaml}: Definición semántica de actividades, recursos y tiempos.
             \item \texttt{env\_permit.xes.gz}: Registro de eventos original comprimido.
             \item \texttt{window\_sizes.json}: Configuración de tamaño de ventana para el EventTransformer.
-            \item \textbf{\texttt{splitted/}}: Trazas divididas en 5 folds para validación cruzada, conteniendo los archivos en formato XES \texttt{train\_foldX}, \texttt{val\_foldX} y \texttt{test\_foldX} (donde $X \in \{0, 1, 2, 3, 4\}$).
+            \item \textbf{\texttt{splitted/}}: Trazas divididas en 5 folds para validación cruzada, conteniendo los archivos en formato comprimido \texttt{train\_foldX\_env\_permit.xes.gz}, \texttt{val\_foldX\_env\_permit.xes.gz} y \texttt{test\_foldX\_env\_permit.xes.gz} (donde $X \in \{0, 1, 2, 3, 4\}$).
         \end{itemize}
     \end{itemize}
 
@@ -62,6 +64,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{resultados\_bayes\_opt.csv}: Salida de la Optimización Bayesiana clásica (5 semillas).
         \item \texttt{resultados\_vqe\_sweep.csv} y \texttt{resultados\_qite\_sweep.csv}: Resultados de barrido de ruido en FT3.
         \item \texttt{resultados\_vqe\_qmio.csv} y \texttt{resultados\_qite\_qmio.csv}: Resultados físicos en la QPU de Qmio.
+        \item \texttt{README.md}: Documento explicativo de las tablas de resultados y los gráficos generados.
         \item Gráficos de salida en alta resolución: \texttt{comparativa\_tiempos.png}, \texttt{comparativa\_energia.png}, \texttt{comparativa\_factibilidad.png}, \texttt{impacto\_ruido\_factibilidad.png}, \texttt{promedio\_violaciones.png}, \texttt{comparativa\_tiempos\_semillas.png}, \texttt{degradacion\_tiempo\_ruido.png}, \texttt{comparativa\_energia\_desglosada.png}, \texttt{frontera\_pareto.png} y \texttt{comparativa\_precision.png}.
     \end{itemize}
 
@@ -71,6 +74,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{launch\_hpo.sh}: Script array de Slurm (tareas 1-100) para procesar el pool clásico HPO.
         \item \texttt{run\_bayes\_opt.sh}, \texttt{run\_vqe.sh}, \texttt{run\_qite.sh}: Envíos para resolvedores en la partición clásica.
         \item \texttt{run\_vqe\_qmio.sh}, \texttt{run\_qite\_qmio.sh}: Enrutadores para ejecutar VQE y VarQITE en Qmio.
+        \item \texttt{README.md}: Documento explicativo de la configuración y orquestación de trabajos de supercomputación.
     \end{itemize}
 
     \item \textbf{Documentación (\texttt{docs/})}:
@@ -81,6 +85,7 @@ A continuación, se detalla de forma exhaustiva la topología completa del repos
         \item \texttt{TFG\_Master\_Report_HPO.md}: Reporte maestro del proyecto.
         \item \texttt{resumen\_abstract.tex}: Archivo LaTeX del resumen de la tesis.
         \item \texttt{manuales\_tecnicos.tex}: LaTeX del presente Apéndice A.
+        \item \texttt{README.md}: Documento descriptivo de los informes, borradores y fuentes de documentación del proyecto.
     \end{itemize}
 \end{itemize}
 
